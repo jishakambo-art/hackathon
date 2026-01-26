@@ -8,10 +8,10 @@ class Settings(BaseSettings):
     supabase_anon_key: str
     supabase_service_key: str
 
-    # Substack OAuth
-    substack_client_id: str
-    substack_client_secret: str
-    substack_redirect_uri: str
+    # Substack OAuth (optional for demo mode)
+    substack_client_id: str = "demo-client-id"
+    substack_client_secret: str = "demo-client-secret"
+    substack_redirect_uri: str = "http://localhost:8000/auth/substack/callback"
 
     # Perplexity
     perplexity_api_key: str

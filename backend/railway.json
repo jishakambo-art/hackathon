@@ -5,9 +5,9 @@
     "buildCommand": "pip install -r requirements.txt && playwright install-deps && playwright install chromium"
   },
   "deploy": {
-    "startCommand": "uvicorn app.main:app --host 0.0.0.0 --port $PORT --loop asyncio",
-    "healthcheckPath": "/",
-    "healthcheckTimeout": 100,
+    "startCommand": "uvicorn app.main:app --host 0.0.0.0 --port $PORT --loop asyncio --workers 1",
+    "healthcheckPath": "/health",
+    "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE"
   }
 }
