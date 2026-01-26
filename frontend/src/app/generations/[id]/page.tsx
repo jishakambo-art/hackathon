@@ -41,11 +41,13 @@ export default function GenerationDetailPage({
 }: {
   params: { id: string };
 }) {
-  const { data: generation, isLoading } = useQuery({
+  const { data: generation, isLoading } = useQuery<Generation>({
     queryKey: ["generation", params.id],
     queryFn: () => getGeneration(params.id),
-    refetchInterval: (data) =>
-      data?.status === "complete" || data?.status === "failed" ? false : 3000,
+    refetchInterval: (query) => {
+      const data = query.state.data;
+      return data?.status === "complete" || data?.status === "failed" ? false : 3000;
+    },
   });
 
   return (
