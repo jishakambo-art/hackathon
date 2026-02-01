@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -14,11 +14,12 @@ interface Subscription {
   enabled: boolean;
 }
 
-export default function SubstackPage() {
+function SubstackPageContent() {
   const queryClient = useQueryClient();
   const searchParams = useSearchParams();
   const [priorities, setPriorities] = useState<Record<string, number>>({});
   const [showConnectedMessage, setShowConnectedMessage] = useState(false);
+  const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:8000";
 
   const { data: subscriptions, isLoading, error } = useQuery({
     queryKey: ["substack-subscriptions"],
@@ -120,7 +121,7 @@ export default function SubstackPage() {
             </p>
           </div>
           <a
-            href="http://localhost:8000/auth/substack"
+            href={`${API_URL}/auth/substack`}
             className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition text-sm font-medium"
           >
             Connect Substack
@@ -206,5 +207,28 @@ export default function SubstackPage() {
         )}
       </div>
     </main>
+  );
+}
+
+export default function SubstackPage() {
+  return (
+    <Suspense fallback={
+      <main className="min-h-screen bg-gray-50">
+        <nav className="bg-white border-b">
+          <div className="max-w-4xl mx-auto px-4 py-4">
+            <Link href="/" className="text-gray-700 hover:text-gray-900">
+              ← Back to Dashboard
+            </Link>
+          </div>
+        </nav>
+        <div className="max-w-4xl mx-auto px-4 py-8">
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+          </div>
+        </div>
+      </main>
+    }>
+      <SubstackPageContent />
+    </Suspense>
   );
 }
