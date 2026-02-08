@@ -35,6 +35,9 @@ async function fetchWithAuth(endpoint: string, options: RequestInit = {}) {
   return response.json();
 }
 
+// Export as apiRequest for general use
+export const apiRequest = fetchWithAuth;
+
 // Substack
 export async function getSubstackSubscriptions() {
   return fetchWithAuth("/substack/subscriptions");
