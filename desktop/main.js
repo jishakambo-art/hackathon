@@ -44,6 +44,9 @@ app.on('window-all-closed', () => {
 // IPC Handlers
 
 // Authenticate with NotebookLM
+let currentBrowser = null;
+let currentContext = null;
+
 ipcMain.handle('authenticate-notebooklm', async (event, userId) => {
   try {
     console.log('Starting NotebookLM authentication for user:', userId);
@@ -63,31 +66,63 @@ ipcMain.handle('authenticate-notebooklm', async (event, userId) => {
       ],
     });
 
+    currentBrowser = browser;
+
     const context = await browser.newContext({
       ignoreHTTPSErrors: true,
     });
 
+    currentContext = context;
+
     const page = await context.newPage();
 
     // Navigate to NotebookLM
-    await page.goto('https://notebooklm.google.com/');
+    await page.goto('https://notebooklm.google.com/', { waitUntil: 'networkidle' });
 
-    // Wait for user to complete login (5 minutes timeout)
-    try {
-      await page.waitForSelector('[data-testid="notebook-card"], [aria-label="Get started"], [data-testid="create-notebook"]', {
-        timeout: 300000
-      });
-    } catch (error) {
-      // Timeout or error, but still try to save session
-      console.log('Timeout waiting for login confirmation, but proceeding to save session');
+    console.log('Browser opened, waiting for user to complete authentication');
+
+    // Return immediately - the frontend will wait for user confirmation
+    return {
+      success: true,
+      message: 'Browser opened, waiting for authentication',
+      credentialsPath,
+      needsConfirmation: true,
+    };
+  } catch (error) {
+    console.error('Authentication error:', error);
+    if (currentBrowser) {
+      await currentBrowser.close();
+      currentBrowser = null;
+      currentContext = null;
+    }
+    return {
+      success: false,
+      message: error.message,
+    };
+  }
+});
+
+// Complete NotebookLM authentication after user confirms
+ipcMain.handle('complete-notebooklm-auth', async (event, userId) => {
+  try {
+    if (!currentContext || !currentBrowser) {
+      throw new Error('No active browser session');
     }
 
+    console.log('Completing NotebookLM authentication for user:', userId);
+
+    const credentialsDir = path.join(app.getPath('userData'), 'notebooklm_credentials');
+    const credentialsPath = path.join(credentialsDir, `${userId}.json`);
+
     // Save storage state (cookies, localStorage, etc.)
-    await context.storageState({ path: credentialsPath });
+    await currentContext.storageState({ path: credentialsPath });
 
-    await browser.close();
+    // Close browser
+    await currentBrowser.close();
+    currentBrowser = null;
+    currentContext = null;
 
-    console.log('Authentication successful, credentials saved');
+    console.log('Authentication completed, credentials saved');
 
     return {
       success: true,
@@ -95,7 +130,12 @@ ipcMain.handle('authenticate-notebooklm', async (event, userId) => {
       credentialsPath,
     };
   } catch (error) {
-    console.error('Authentication error:', error);
+    console.error('Complete authentication error:', error);
+    if (currentBrowser) {
+      await currentBrowser.close();
+      currentBrowser = null;
+      currentContext = null;
+    }
     return {
       success: false,
       message: error.message,

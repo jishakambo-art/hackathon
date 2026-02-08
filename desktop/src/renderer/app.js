@@ -152,41 +152,77 @@ connectNotebookLMBtn.addEventListener('click', async () => {
 
   try {
     setButtonLoading(connectNotebookLMBtn, true, 'Opening browser...');
-    showStatus(notebooklmStatus, 'A browser window will open. Please sign in to NotebookLM with your Google account...', 'loading');
+    showStatus(notebooklmStatus, 'Opening browser...', 'loading');
 
-    // Step 1: Authenticate with NotebookLM
+    // Step 1: Open browser for NotebookLM
     const authResult = await window.electronAPI.authenticateNotebookLM(currentUser.id);
 
     if (!authResult.success) {
       throw new Error(authResult.message);
     }
 
-    showStatus(notebooklmStatus, 'Uploading credentials to server...', 'loading');
-
-    // Step 2: Upload credentials to server
-    const uploadResult = await window.electronAPI.uploadCredentials({
-      userId: currentUser.id,
-      token: accessToken,
-      apiUrl: API_URL,
-    });
-
-    if (!uploadResult.success) {
-      throw new Error(uploadResult.message);
-    }
-
-    showStatus(notebooklmStatus, '✓ Successfully connected to NotebookLM!', 'success');
+    // Browser is now open, show confirmation button
     setButtonLoading(connectNotebookLMBtn, false);
+    connectNotebookLMBtn.style.display = 'none';
 
-    // Show complete section
-    setTimeout(() => {
-      notebooklmSection.classList.add('hidden');
-      completeSection.classList.remove('hidden');
-    }, 2000);
+    showStatus(notebooklmStatus, '✓ Browser opened! Sign in to NotebookLM, then click the button below when done.', 'loading');
+
+    // Create confirmation button
+    const confirmBtn = document.createElement('button');
+    confirmBtn.id = 'confirm-signin-btn';
+    confirmBtn.className = 'btn btn-primary';
+    confirmBtn.style.marginTop = '16px';
+    confirmBtn.innerHTML = '<span class="btn-icon">✓</span> I\'ve Signed In to NotebookLM';
+    notebooklmStatus.parentElement.appendChild(confirmBtn);
+
+    // Handle confirmation
+    confirmBtn.addEventListener('click', async () => {
+      try {
+        setButtonLoading(confirmBtn, true, 'Saving credentials...');
+        showStatus(notebooklmStatus, 'Closing browser and saving credentials...', 'loading');
+
+        // Step 2: Complete authentication (closes browser, saves credentials)
+        const completeResult = await window.electronAPI.completeNotebookLMAuth(currentUser.id);
+
+        if (!completeResult.success) {
+          throw new Error(completeResult.message);
+        }
+
+        showStatus(notebooklmStatus, 'Uploading credentials to server...', 'loading');
+
+        // Step 3: Upload credentials to server
+        const uploadResult = await window.electronAPI.uploadCredentials({
+          userId: currentUser.id,
+          token: accessToken,
+          apiUrl: API_URL,
+        });
+
+        if (!uploadResult.success) {
+          throw new Error(uploadResult.message);
+        }
+
+        showStatus(notebooklmStatus, '✓ Successfully connected to NotebookLM!', 'success');
+        setButtonLoading(confirmBtn, false);
+        confirmBtn.remove();
+
+        // Show complete section
+        setTimeout(() => {
+          notebooklmSection.classList.add('hidden');
+          completeSection.classList.remove('hidden');
+        }, 2000);
+
+      } catch (error) {
+        console.error('Complete authentication error:', error);
+        showStatus(notebooklmStatus, `Error: ${error.message}`, 'error');
+        setButtonLoading(confirmBtn, false);
+      }
+    });
 
   } catch (error) {
     console.error('NotebookLM connection error:', error);
     showStatus(notebooklmStatus, `Error: ${error.message}`, 'error');
     setButtonLoading(connectNotebookLMBtn, false);
+    connectNotebookLMBtn.style.display = '';
   }
 });
 
