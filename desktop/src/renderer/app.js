@@ -70,8 +70,8 @@ signInBtn.addEventListener('click', async () => {
     setButtonLoading(signInBtn, true, 'Opening browser...');
     showStatus(authStatus, 'Opening browser for Google Sign In...', 'loading');
 
-    // Open web app for authentication
-    await window.electronAPI.openExternal(`${WEB_APP_URL}/login`);
+    // Open web app desktop setup page for authentication
+    await window.electronAPI.openExternal(`${WEB_APP_URL}/desktop-setup`);
 
     // Show instructions to get token
     showStatus(authStatus, 'After signing in, copy your token from the web app and paste it below:', 'loading');
