@@ -7,7 +7,8 @@
   "scripts": {
     "start": "electron .",
     "package": "electron-forge package",
-    "make": "electron-forge make"
+    "make": "electron-forge make",
+    "make:dmg": "npm run make && hdiutil create -volname 'DailyBrief Setup' -srcfolder 'out/DailyBrief Setup-darwin-x64/DailyBrief Setup.app' -ov -format UDZO 'out/DailyBrief-Setup.dmg'"
   },
   "keywords": ["podcast", "notebooklm", "automation"],
   "author": "DailyBrief",

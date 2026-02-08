@@ -22,6 +22,15 @@ The desktop app has been built successfully! Follow these steps to create a GitH
 Download and run the desktop app to connect your NotebookLM account.
 
 ### Installation
+
+**Option 1: DMG (Recommended)**
+1. Download the DMG file below
+2. Open the DMG
+3. Drag "DailyBrief Setup" to your Applications folder
+4. Launch the app from Applications
+5. If macOS says the app can't be opened, go to System Settings > Privacy & Security and click "Open Anyway"
+
+**Option 2: ZIP**
 1. Download the ZIP file below
 2. Extract the ZIP file
 3. Drag "DailyBrief Setup.app" to your Applications folder
@@ -38,12 +47,19 @@ Download and run the desktop app to connect your NotebookLM account.
 - Secure credential upload to server
 ```
 
-## Step 4: Upload the ZIP File
+## Step 4: Upload the Files
 
 1. Click "Attach binaries by dropping them here or selecting them"
-2. Navigate to: `/Users/jishakambo/Documents/Hackathon/desktop/out/make/zip/darwin/x64/`
-3. Upload the file: `DailyBrief Setup-darwin-x64-1.0.0.zip`
-4. Optionally rename it to: `DailyBrief-Setup-Mac.zip` (more user-friendly name)
+
+2. **Upload DMG** (Recommended):
+   - Navigate to: `/Users/jishakambo/Documents/Hackathon/desktop/out/`
+   - Upload: `DailyBrief-Setup.dmg`
+   - Rename to: `DailyBrief-Setup-Mac.dmg`
+
+3. **Upload ZIP** (Alternative):
+   - Navigate to: `/Users/jishakambo/Documents/Hackathon/desktop/out/make/zip/darwin/x64/`
+   - Upload: `DailyBrief Setup-darwin-x64-1.0.0.zip`
+   - Rename to: `DailyBrief-Setup-Mac.zip`
 
 ## Step 5: Publish
 
