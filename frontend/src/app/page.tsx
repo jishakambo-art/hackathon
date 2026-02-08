@@ -25,13 +25,13 @@ export default function Home() {
   }
 
   return (
-    <main className="min-h-screen bg-gray-50">
-      <nav className="bg-white border-b">
+    <main className="min-h-screen bg-purple-gradient">
+      <nav className="bg-white/90 backdrop-blur-sm border-b border-white/20">
         <div className="max-w-6xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-xl font-bold text-gray-900">DailyBrief</h1>
+          <h1 className="text-xl font-bold text-gray-900">DailyBrief 🎙️</h1>
           <button
             onClick={signOut}
-            className="text-sm text-gray-700 hover:text-gray-900 font-medium"
+            className="text-sm text-gray-700 hover:text-gray-900 font-medium px-4 py-2 rounded-lg hover:bg-gray-100 transition"
           >
             Sign Out
           </button>
@@ -40,10 +40,10 @@ export default function Home() {
 
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="mb-8 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-2">
+          <h2 className="text-3xl font-bold text-white mb-2">
             Your Personalized Daily Podcast
           </h2>
-          <p className="text-gray-700">
+          <p className="text-white/90">
             Configure your sources and generate your briefing
           </p>
         </div>
@@ -51,65 +51,65 @@ export default function Home() {
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <Link
             href="/sources/substack"
-            className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition"
+            className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
           >
             <div className="text-3xl mb-3">📰</div>
             <h2 className="font-semibold text-lg mb-2 text-gray-900">Substack</h2>
-            <p className="text-gray-700 text-sm">
+            <p className="text-gray-600 text-sm">
               Manage your newsletter subscriptions
             </p>
           </Link>
           <Link
             href="/sources/rss"
-            className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition"
+            className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
           >
             <div className="text-3xl mb-3">📡</div>
             <h2 className="font-semibold text-lg mb-2 text-gray-900">RSS Feeds</h2>
-            <p className="text-gray-700 text-sm">Add and manage RSS feeds</p>
+            <p className="text-gray-600 text-sm">Add and manage RSS feeds</p>
           </Link>
           <Link
             href="/sources/topics"
-            className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition"
+            className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
           >
             <div className="text-3xl mb-3">🔍</div>
             <h2 className="font-semibold text-lg mb-2 text-gray-900">News Topics</h2>
-            <p className="text-gray-700 text-sm">
+            <p className="text-gray-600 text-sm">
               Track companies and topics
             </p>
           </Link>
           <Link
             href="/sources/notebooklm"
-            className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition"
+            className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
           >
             <div className="text-3xl mb-3">🎙️</div>
             <h2 className="font-semibold text-lg mb-2 text-gray-900">NotebookLM</h2>
-            <p className="text-gray-700 text-sm">
+            <p className="text-gray-600 text-sm">
               Connect your Google account
             </p>
           </Link>
           <Link
             href="/schedule"
-            className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition"
+            className="bg-white p-6 rounded-xl shadow-lg hover:shadow-xl transition-all hover:-translate-y-1"
           >
             <div className="text-3xl mb-3">⏰</div>
             <h2 className="font-semibold text-lg mb-2 text-gray-900">Schedule</h2>
-            <p className="text-gray-700 text-sm">
+            <p className="text-gray-600 text-sm">
               Set up daily generation time
             </p>
           </Link>
           <Link
             href="/generate"
-            className="bg-blue-600 text-white p-6 rounded-lg shadow-sm border border-blue-700 hover:bg-blue-700 transition"
+            className="btn-purple-gradient p-6 rounded-xl shadow-lg hover:shadow-xl transition-all"
           >
             <div className="text-3xl mb-3">⚡</div>
             <h2 className="font-semibold text-lg mb-2">Generate Now</h2>
-            <p className="text-blue-100 text-sm">
+            <p className="text-white/90 text-sm">
               Create podcast immediately
             </p>
           </Link>
         </div>
 
-        <div className="bg-white p-6 rounded-lg shadow-sm border">
+        <div className="bg-white/90 backdrop-blur-sm p-6 rounded-xl shadow-lg">
           <div className="flex justify-between items-center mb-4">
             <h2 className="font-semibold text-lg text-gray-900">Generation History</h2>
           </div>
@@ -118,7 +118,7 @@ export default function Home() {
           </p>
           <Link
             href="/generations"
-            className="text-blue-600 hover:underline text-sm font-medium"
+            className="text-purple-600 hover:text-purple-700 hover:underline text-sm font-medium"
           >
             View all generations →
           </Link>
