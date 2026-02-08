@@ -76,16 +76,16 @@ async def check_and_generate_for_all_users():
         user_id = user_prefs["user_id"]
         print(f"[SCHEDULER] Checking user {user_id} - enabled={user_prefs.get('daily_generation_enabled')}, time={user_prefs.get('generation_time')}")
 
-        # Check if already generated today
-        recent_logs = demo_store.get_generation_logs(user_id, limit=1)
-        if recent_logs:
-            last_gen = recent_logs[0]
-            last_gen_date = datetime.fromisoformat(last_gen["scheduled_at"]).date()
-            today = datetime.utcnow().date()
-
-            if last_gen_date == today:
-                print(f"[SCHEDULER] User {user_id} already has a generation today - skipping")
-                continue
+        # TEMPORARILY DISABLED: Check if already generated today (for testing)
+        # recent_logs = demo_store.get_generation_logs(user_id, limit=1)
+        # if recent_logs:
+        #     last_gen = recent_logs[0]
+        #     last_gen_date = datetime.fromisoformat(last_gen["scheduled_at"]).date()
+        #     today = datetime.utcnow().date()
+        #
+        #     if last_gen_date == today:
+        #         print(f"[SCHEDULER] User {user_id} already has a generation today - skipping")
+        #         continue
 
         if should_generate_now(user_prefs):
             print(f"[SCHEDULER] User {user_id} is due for generation")
