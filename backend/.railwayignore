@@ -1,0 +1,35 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+ENV/
+env/
+
+# Logs
+*.log
+backend.log
+
+# Testing
+test_*.py
+*.pytest_cache
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Credentials (stored in Railway environment)
+.env
+.notebooklm_credentials/
+
+# Documentation
+*.md
+!README.md
