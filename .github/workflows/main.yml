@@ -1,0 +1,28 @@
+name: Daily Podcast Generation Cron
+
+on:
+  schedule:
+    # Runs every minute
+    - cron: '*/1 * * * *'
+  workflow_dispatch: # Allows manual triggering for testing
+
+jobs:
+  trigger-generation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Daily Generation Check
+        run: |
+          response=$(curl -s -w "\n%{http_code}" -X POST \
+            https://hackathon-production-f662.up.railway.app/generate/cron/daily-generation \
+            -H "Content-Type: application/json")
+
+          http_code=$(echo "$response" | tail -n1)
+          body=$(echo "$response" | sed '$d')
+
+          echo "HTTP Status: $http_code"
+          echo "Response: $body"
+
+          if [ "$http_code" != "200" ]; then
+            echo "Error: Cron job failed with status $http_code"
+            exit 1
+          fi
