@@ -204,7 +204,7 @@ export default function SchedulePage() {
               value={time}
               onChange={(e) => setTime(e.target.value)}
               disabled={!enabled}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white disabled:bg-gray-100 disabled:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 disabled:bg-gray-100 disabled:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             />
             <p className="mt-2 text-sm text-gray-600">
               Enter the time when your daily podcast should be generated (any minute is allowed)
@@ -220,7 +220,7 @@ export default function SchedulePage() {
               value={timezone}
               onChange={(e) => setTimezone(e.target.value)}
               disabled={!enabled}
-              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white disabled:bg-gray-100 disabled:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+              className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white text-gray-900 disabled:bg-gray-100 disabled:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
             >
               {TIMEZONES.map((tz) => (
                 <option key={tz.value} value={tz.value}>
