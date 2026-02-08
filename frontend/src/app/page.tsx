@@ -48,7 +48,7 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
           <Link
             href="/sources/substack"
             className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition"
@@ -87,21 +87,38 @@ export default function Home() {
               Connect your Google account
             </p>
           </Link>
+          <Link
+            href="/schedule"
+            className="bg-white p-6 rounded-lg shadow-sm border hover:shadow-md transition"
+          >
+            <div className="text-3xl mb-3">⏰</div>
+            <h2 className="font-semibold text-lg mb-2 text-gray-900">Schedule</h2>
+            <p className="text-gray-700 text-sm">
+              Set up daily generation time
+            </p>
+          </Link>
+          <Link
+            href="/generate"
+            className="bg-blue-600 text-white p-6 rounded-lg shadow-sm border border-blue-700 hover:bg-blue-700 transition"
+          >
+            <div className="text-3xl mb-3">⚡</div>
+            <h2 className="font-semibold text-lg mb-2">Generate Now</h2>
+            <p className="text-blue-100 text-sm">
+              Create podcast immediately
+            </p>
+          </Link>
         </div>
 
         <div className="bg-white p-6 rounded-lg shadow-sm border">
-          <div className="flex justify-between items-center mb-6">
-            <h2 className="font-semibold text-lg text-gray-900">Recent Generations</h2>
-            <Link
-              href="/generate"
-              className="px-4 py-2 bg-gray-900 text-white rounded-lg hover:bg-gray-800 transition text-sm"
-            >
-              Generate Now
-            </Link>
+          <div className="flex justify-between items-center mb-4">
+            <h2 className="font-semibold text-lg text-gray-900">Generation History</h2>
           </div>
+          <p className="text-gray-600 text-sm mb-4">
+            View the history of your podcast generations and their status.
+          </p>
           <Link
             href="/generations"
-            className="text-blue-600 hover:underline text-sm"
+            className="text-blue-600 hover:underline text-sm font-medium"
           >
             View all generations →
           </Link>

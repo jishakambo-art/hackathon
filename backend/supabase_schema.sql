@@ -72,6 +72,8 @@ create table user_preferences (
   podcast_length text default 'medium',
   language text default 'en',
   timezone text default 'America/Los_Angeles',
+  daily_generation_enabled boolean default false,
+  generation_time time default '07:00:00',
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   updated_at timestamp with time zone default timezone('utc'::text, now()) not null
 );

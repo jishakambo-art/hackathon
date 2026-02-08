@@ -1,6 +1,6 @@
 """In-memory storage for demo mode - no database required."""
 from typing import Dict, List
-from datetime import datetime
+from datetime import datetime, time as Time
 import uuid
 
 # In-memory storage
@@ -8,6 +8,7 @@ _substack_sources: List[Dict] = []
 _rss_sources: List[Dict] = []
 _news_topics: List[Dict] = []
 _generation_logs: List[Dict] = []
+_user_preferences: Dict[str, Dict] = {}  # user_id -> preferences
 
 
 # ============ Substack Sources ============
@@ -144,3 +145,40 @@ def update_generation_log(generation_id: str, status: str = None, error: str = N
             log.update(kwargs)
             return log
     return None
+
+
+# ============ User Preferences ============
+
+def get_user_preferences(user_id: str) -> Dict:
+    """Get user preferences."""
+    if user_id not in _user_preferences:
+        # Create default preferences
+        _user_preferences[user_id] = {
+            "id": str(uuid.uuid4()),
+            "user_id": user_id,
+            "podcast_style": "deep-dive",
+            "podcast_length": "medium",
+            "language": "en",
+            "timezone": "America/Los_Angeles",
+            "daily_generation_enabled": False,
+            "generation_time": Time(7, 0),
+            "created_at": datetime.utcnow().isoformat(),
+            "updated_at": datetime.utcnow().isoformat(),
+        }
+    return _user_preferences[user_id]
+
+
+def update_user_preferences(user_id: str, updates: Dict) -> Dict:
+    """Update user preferences."""
+    prefs = get_user_preferences(user_id)
+    prefs.update(updates)
+    prefs["updated_at"] = datetime.utcnow().isoformat()
+    return prefs
+
+
+def get_users_with_daily_generation_enabled() -> List[Dict]:
+    """Get all users who have daily generation enabled."""
+    return [
+        prefs for prefs in _user_preferences.values()
+        if prefs.get("daily_generation_enabled", False)
+    ]

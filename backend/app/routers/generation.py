@@ -1,5 +1,5 @@
-from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException, BackgroundTasks, Header
+from typing import List, Optional
 from datetime import datetime
 
 from app.config import get_settings, Settings
@@ -7,6 +7,7 @@ from app.schemas.generation import GenerationLog, GenerationStatus
 from app.services.supabase import get_current_user
 from app.services import demo_store
 from app.services.podcast_generator import generate_podcast_for_user
+from app.services.scheduler import check_and_generate_for_all_users
 
 router = APIRouter()
 
@@ -55,3 +56,30 @@ async def get_generation(
         raise HTTPException(status_code=404, detail="Generation not found")
 
     return log
+
+
+@router.post("/cron/daily-generation")
+async def cron_daily_generation(
+    x_cron_secret: Optional[str] = Header(None),
+    settings: Settings = Depends(get_settings),
+):
+    """
+    Cron endpoint for daily podcast generation.
+
+    This endpoint should be called every minute by a cron job.
+    It checks all users with daily generation enabled and generates
+    podcasts for those whose scheduled time has arrived.
+
+    Optional: Protect with a secret header for security.
+    """
+    # Optional: Add security check
+    # if settings.cron_secret and x_cron_secret != settings.cron_secret:
+    #     raise HTTPException(status_code=401, detail="Unauthorized")
+
+    result = await check_and_generate_for_all_users()
+
+    return {
+        "status": "success",
+        "timestamp": datetime.utcnow().isoformat(),
+        **result,
+    }

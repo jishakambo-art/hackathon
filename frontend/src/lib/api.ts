@@ -94,3 +94,19 @@ export async function getGenerations() {
 export async function getGeneration(id: string) {
   return fetchWithAuth(`/generations/${id}`);
 }
+
+// Schedule Preferences
+export async function getSchedulePreferences() {
+  return fetchWithAuth("/user/schedule");
+}
+
+export async function updateSchedulePreferences(data: {
+  daily_generation_enabled?: boolean;
+  generation_time?: string;
+  timezone?: string;
+}) {
+  return fetchWithAuth("/user/schedule", {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
+}
