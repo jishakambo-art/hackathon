@@ -41,14 +41,15 @@ def get_rss_sources(user_id: str) -> List[Dict]:
 
 def add_rss_source(user_id: str, url: str, name: str) -> Dict:
     """Add a new RSS source."""
+    now_utc = datetime.utcnow().isoformat() + 'Z'
     source = {
         "id": str(uuid.uuid4()),
         "user_id": user_id,
         "url": url,
         "name": name,
         "enabled": True,
-        "created_at": datetime.utcnow().isoformat(),
-        "updated_at": datetime.utcnow().isoformat(),
+        "created_at": now_utc,
+        "updated_at": now_utc,
     }
     _rss_sources.append(source)
     return source
@@ -72,13 +73,14 @@ def get_news_topics(user_id: str) -> List[Dict]:
 
 def add_news_topic(user_id: str, topic: str) -> Dict:
     """Add a new news topic."""
+    now_utc = datetime.utcnow().isoformat() + 'Z'
     topic_obj = {
         "id": str(uuid.uuid4()),
         "user_id": user_id,
         "topic": topic,
         "enabled": True,
-        "created_at": datetime.utcnow().isoformat(),
-        "updated_at": datetime.utcnow().isoformat(),
+        "created_at": now_utc,
+        "updated_at": now_utc,
     }
     _news_topics.append(topic_obj)
     return topic_obj
@@ -113,17 +115,20 @@ def get_generation_log(user_id: str, generation_id: str) -> Dict:
 
 def create_generation_log(user_id: str) -> Dict:
     """Create a new generation log."""
+    # Use ISO format with 'Z' suffix to indicate UTC timezone
+    now_utc = datetime.utcnow().isoformat() + 'Z'
+
     log = {
         "id": str(uuid.uuid4()),
         "user_id": user_id,
-        "scheduled_at": datetime.utcnow().isoformat(),
+        "scheduled_at": now_utc,
         "started_at": None,
         "completed_at": None,
         "status": "scheduled",
         "notebook_id": None,
         "sources_used": None,
         "error_message": None,
-        "created_at": datetime.utcnow().isoformat(),
+        "created_at": now_utc,
     }
     _generation_logs.append(log)
     return log
@@ -138,9 +143,9 @@ def update_generation_log(generation_id: str, status: str = None, error: str = N
             if error:
                 log["error_message"] = error
             if status == "fetching":
-                log["started_at"] = datetime.utcnow().isoformat()
+                log["started_at"] = datetime.utcnow().isoformat() + 'Z'
             if status in ["complete", "failed"]:
-                log["completed_at"] = datetime.utcnow().isoformat()
+                log["completed_at"] = datetime.utcnow().isoformat() + 'Z'
             # Update any additional fields
             log.update(kwargs)
             return log
@@ -157,6 +162,7 @@ def get_user_preferences(user_id: str) -> Dict:
     if user_id not in _user_preferences:
         print(f"[DEMO_STORE GET_PREFS] User {user_id} NOT FOUND - Creating default preferences")
         # Create default preferences
+        now_utc = datetime.utcnow().isoformat() + 'Z'
         _user_preferences[user_id] = {
             "id": str(uuid.uuid4()),
             "user_id": user_id,
@@ -166,8 +172,8 @@ def get_user_preferences(user_id: str) -> Dict:
             "timezone": "America/Los_Angeles",
             "daily_generation_enabled": False,
             "generation_time": Time(7, 0),
-            "created_at": datetime.utcnow().isoformat(),
-            "updated_at": datetime.utcnow().isoformat(),
+            "created_at": now_utc,
+            "updated_at": now_utc,
         }
     else:
         print(f"[DEMO_STORE GET_PREFS] User {user_id} FOUND - Returning existing preferences")
@@ -181,7 +187,7 @@ def update_user_preferences(user_id: str, updates: Dict) -> Dict:
     print(f"[DEMO_STORE] Before update - User {user_id}: daily_enabled={prefs.get('daily_generation_enabled')}")
     print(f"[DEMO_STORE] Applying updates: {updates}")
     prefs.update(updates)
-    prefs["updated_at"] = datetime.utcnow().isoformat()
+    prefs["updated_at"] = datetime.utcnow().isoformat() + 'Z'
     print(f"[DEMO_STORE] After update - User {user_id}: daily_enabled={prefs.get('daily_generation_enabled')}")
     return prefs
 
