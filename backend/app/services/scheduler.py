@@ -58,10 +58,10 @@ def should_generate_now(user_prefs: Dict) -> bool:
 
 async def check_and_generate_for_all_users():
     """
-    Check all users with daily generation enabled and generate podcasts
-    for those whose scheduled time has arrived.
+    Generate podcasts for all users with daily generation enabled.
 
-    This function should be called every 5 minutes by a cron job.
+    This function is called by the cron job at 7am PT daily.
+    No time checks needed - the cron job handles the timing.
     """
     settings = get_settings()
     users_to_generate = []
@@ -69,29 +69,13 @@ async def check_and_generate_for_all_users():
     # Get all users with daily generation enabled
     users_with_schedule = demo_store.get_users_with_daily_generation_enabled()
 
-    print(f"[SCHEDULER] Checking {len(users_with_schedule)} users with daily generation enabled")
+    print(f"[SCHEDULER] Found {len(users_with_schedule)} users with daily generation enabled")
 
-    # Check which users need generation now
+    # Generate for all users with daily generation enabled
     for user_prefs in users_with_schedule:
         user_id = user_prefs["user_id"]
-        print(f"[SCHEDULER] Checking user {user_id} - enabled={user_prefs.get('daily_generation_enabled')}, time={user_prefs.get('generation_time')}")
-
-        # TEMPORARILY DISABLED: Check if already generated today (for testing)
-        # recent_logs = demo_store.get_generation_logs(user_id, limit=1)
-        # if recent_logs:
-        #     last_gen = recent_logs[0]
-        #     last_gen_date = datetime.fromisoformat(last_gen["scheduled_at"]).date()
-        #     today = datetime.utcnow().date()
-        #
-        #     if last_gen_date == today:
-        #         print(f"[SCHEDULER] User {user_id} already has a generation today - skipping")
-        #         continue
-
-        if should_generate_now(user_prefs):
-            print(f"[SCHEDULER] User {user_id} is due for generation")
-            users_to_generate.append(user_id)
-        else:
-            print(f"[SCHEDULER] User {user_id} is NOT due for generation yet")
+        print(f"[SCHEDULER] User {user_id} has daily generation enabled - will generate")
+        users_to_generate.append(user_id)
 
     # Generate podcasts for all matched users
     if users_to_generate:
