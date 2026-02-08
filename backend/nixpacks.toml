@@ -1,8 +1,5 @@
 [phases.setup]
 nixPkgs = ["xorg.xvfb"]
 
-[phases.install]
-cmds = ["playwright install-deps chromium", "playwright install chromium"]
-
 [start]
-cmd = "sh -c 'Xvfb :99 -screen 0 1024x768x24 -ac +extension GLX +render -noreset & export DISPLAY=:99 && sleep 2 && uvicorn app.main:app --host 0.0.0.0 --port $PORT --loop asyncio --workers 1'"
+cmd = "./setup_and_start.sh"
