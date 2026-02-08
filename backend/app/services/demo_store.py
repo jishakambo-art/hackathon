@@ -151,7 +151,11 @@ def update_generation_log(generation_id: str, status: str = None, error: str = N
 
 def get_user_preferences(user_id: str) -> Dict:
     """Get user preferences."""
+    print(f"[DEMO_STORE GET_PREFS] Getting preferences for user: {user_id}")
+    print(f"[DEMO_STORE GET_PREFS] Current users in store: {list(_user_preferences.keys())}")
+
     if user_id not in _user_preferences:
+        print(f"[DEMO_STORE GET_PREFS] User {user_id} NOT FOUND - Creating default preferences")
         # Create default preferences
         _user_preferences[user_id] = {
             "id": str(uuid.uuid4()),
@@ -165,6 +169,9 @@ def get_user_preferences(user_id: str) -> Dict:
             "created_at": datetime.utcnow().isoformat(),
             "updated_at": datetime.utcnow().isoformat(),
         }
+    else:
+        print(f"[DEMO_STORE GET_PREFS] User {user_id} FOUND - Returning existing preferences")
+
     return _user_preferences[user_id]
 
 

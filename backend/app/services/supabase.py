@@ -36,7 +36,10 @@ async def get_current_user(
                 headers={"WWW-Authenticate": "Bearer"},
             )
 
-        return user.user.id
+        user_id = user.user.id
+        print(f"[AUTH] Authenticated user_id: {user_id}")
+
+        return user_id
 
     except Exception as e:
         raise HTTPException(
