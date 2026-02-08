@@ -84,6 +84,16 @@ export default function SchedulePage() {
 
   const timeOptions = generateTimeOptions();
 
+  // Format time for display (HH:MM -> 12-hour format)
+  const formatTimeDisplay = (time24: string) => {
+    if (!time24) return time24;
+    const [hourStr, minuteStr] = time24.split(":");
+    const hour = parseInt(hourStr);
+    const displayHour = hour === 0 ? 12 : hour > 12 ? hour - 12 : hour;
+    const period = hour < 12 ? "AM" : "PM";
+    return `${displayHour}:${minuteStr} ${period}`;
+  };
+
   if (isLoading) {
     return (
       <main className="min-h-screen bg-gray-50">
@@ -128,7 +138,7 @@ export default function SchedulePage() {
                         <span className="font-medium text-green-700">Daily generation is enabled</span>
                       </div>
                       <div className="ml-6 text-gray-700">
-                        <strong>Time:</strong> {timeOptions.find((t) => t.value === schedule.generation_time)?.label || schedule.generation_time}
+                        <strong>Time:</strong> {formatTimeDisplay(schedule.generation_time)}
                       </div>
                       <div className="ml-6 text-gray-700">
                         <strong>Timezone:</strong> {TIMEZONES.find((tz) => tz.value === schedule.timezone)?.label || schedule.timezone}
@@ -189,20 +199,15 @@ export default function SchedulePage() {
             <label className="block text-sm font-medium text-gray-700 mb-2">
               Generation Time
             </label>
-            <select
+            <input
+              type="time"
               value={time}
               onChange={(e) => setTime(e.target.value)}
               disabled={!enabled}
               className="w-full px-4 py-3 border border-gray-300 rounded-lg bg-white disabled:bg-gray-100 disabled:text-gray-500 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
-            >
-              {timeOptions.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
+            />
             <p className="mt-2 text-sm text-gray-600">
-              Select the time when your daily podcast should be generated
+              Enter the time when your daily podcast should be generated (any minute is allowed)
             </p>
           </div>
 
@@ -237,7 +242,7 @@ export default function SchedulePage() {
                 </svg>
                 <div className="text-sm text-blue-800">
                   <strong>Next generation:</strong> Your podcast will be automatically generated daily at{" "}
-                  {timeOptions.find((t) => t.value === time)?.label} ({TIMEZONES.find((tz) => tz.value === timezone)?.label})
+                  {formatTimeDisplay(time)} ({TIMEZONES.find((tz) => tz.value === timezone)?.label})
                 </div>
               </div>
             </div>
