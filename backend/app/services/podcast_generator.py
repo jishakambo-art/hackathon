@@ -15,7 +15,6 @@ from app.config import Settings
 from app.services.supabase import get_supabase_client
 from app.services.perplexity import get_news_for_topics
 from app.services.rss import fetch_multiple_feeds
-from app.services.substack import fetch_publication_posts_via_rss
 from app.services.notebooklm import (
     create_notebook_with_content,
     generate_audio_overview,
@@ -67,16 +66,9 @@ async def generate_podcast_for_user(
         # Update status to fetching
         print(f"[GENERATION {generation_id}] About to update status to 'fetching'")
         update_status("fetching")
-        print(f"[GENERATION {generation_id}] Status updated to 'fetching'successfully")
+        print(f"[GENERATION {generation_id}] Status updated to 'fetching' successfully")
 
         # Fetch user's sources from database
-        substack_sources = [
-            s for s in db.get_substack_sources(user_id)
-            if s.get("enabled") and s.get("priority") is not None
-        ]
-        # Sort by priority and limit to 5
-        substack_sources = sorted(substack_sources, key=lambda x: x.get("priority", 999))[:5]
-
         rss_sources = [
             s for s in db.get_rss_sources(user_id)
             if s.get("enabled")
@@ -88,11 +80,6 @@ async def generate_podcast_for_user(
         ]
 
         # Fetch content from each source type
-        substack_posts = []
-        for source in substack_sources:
-            posts = await fetch_publication_posts_via_rss(source.get("subdomain", ""))
-            substack_posts.extend(posts)
-
         rss_urls = [s["url"] for s in rss_sources]
         rss_entries = await fetch_multiple_feeds(rss_urls) if rss_urls else {}
 
@@ -100,9 +87,9 @@ async def generate_podcast_for_user(
         news_summaries = await get_news_for_topics(topic_names, settings) if topic_names else {}
 
         # Format content for NotebookLM
-        print(f"[GENERATION {generation_id}] Fetched content - Substack: {len(substack_posts)}, RSS: {len(rss_entries)}, Topics: {len(news_summaries)}")
+        print(f"[GENERATION {generation_id}] Fetched content - RSS: {len(rss_entries)}, Topics: {len(news_summaries)}")
         content_items = format_content_for_notebook(
-            substack_posts=substack_posts,
+            substack_posts=[],
             rss_entries=rss_entries,
             news_summaries=news_summaries,
         )
@@ -167,7 +154,6 @@ async def generate_podcast_for_user(
             "complete",
             notebook_id=notebook_id,
             sources_used={
-                "substack_posts": len(substack_posts),
                 "rss_feeds": len(rss_entries),
                 "news_topics": len(news_summaries),
                 "total_items": len(content_items),

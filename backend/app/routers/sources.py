@@ -3,8 +3,6 @@ from typing import List
 
 from app.config import get_settings, Settings
 from app.schemas.sources import (
-    SubstackSubscription,
-    SubstackPriorities,
     RSSSource,
     RSSSourceCreate,
     NewsTopic,
@@ -14,36 +12,6 @@ from app.services.supabase import get_current_user
 from app.services import db
 
 router = APIRouter()
-
-
-# ============ Substack Sources ============
-
-@router.get("/substack/subscriptions", response_model=List[SubstackSubscription])
-async def get_substack_subscriptions(
-    user_id: str = Depends(get_current_user),
-    settings: Settings = Depends(get_settings),
-):
-    """Get all Substack subscriptions for the current user."""
-    return db.get_substack_sources(user_id)
-
-
-@router.put("/substack/priorities")
-async def set_substack_priorities(
-    priorities: SubstackPriorities,
-    user_id: str = Depends(get_current_user),
-    settings: Settings = Depends(get_settings),
-):
-    """Set priority rankings (1-5) for Substack subscriptions."""
-    # Validate priorities
-    for publication_id, priority in priorities.priorities.items():
-        if priority < 1 or priority > 5:
-            raise HTTPException(
-                status_code=status.HTTP_400_BAD_REQUEST,
-                detail="Priority must be between 1 and 5",
-            )
-
-    db.update_substack_priorities(user_id, priorities.priorities)
-    return {"message": "Priorities updated"}
 
 
 # ============ RSS Sources ============

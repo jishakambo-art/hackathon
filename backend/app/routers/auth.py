@@ -3,7 +3,7 @@ from fastapi.responses import RedirectResponse
 import httpx
 
 from app.config import get_settings, Settings
-from app.schemas.auth import UserCreate, UserLogin, Token, SubstackCallback
+from app.schemas.auth import UserCreate, UserLogin, Token
 from app.services.supabase import get_supabase_client, get_current_user
 
 router = APIRouter()
@@ -65,112 +65,6 @@ async def login(user: UserLogin, settings: Settings = Depends(get_settings)):
 async def get_current_user_info(user_id: str = Depends(get_current_user)):
     """Get current authenticated user information."""
     return {"user_id": user_id, "authenticated": True}
-
-
-@router.get("/substack")
-async def substack_oauth_start(settings: Settings = Depends(get_settings)):
-    """Initiate Substack OAuth flow (Demo version)."""
-    # For demo: redirect directly to callback with a mock authorization code
-    # In production, this would redirect to Substack's OAuth page
-    return RedirectResponse(url=f"{settings.frontend_url}/auth/substack/authorize")
-
-
-@router.get("/substack/callback")
-async def substack_oauth_callback(
-    authorized: str = "true",
-    settings: Settings = Depends(get_settings),
-):
-    """Handle Substack OAuth callback (Demo version)."""
-    from app.services import demo_store
-
-    if authorized != "true":
-        return RedirectResponse(
-            url=f"{settings.frontend_url}/sources/substack?error=access_denied"
-        )
-
-    # For demo: add some mock Substack subscriptions
-    user_id = "demo-user-id-12345"
-
-    # Check if we already have subscriptions
-    existing = demo_store.get_substack_sources(user_id)
-
-    if not existing:
-        # Add some demo subscriptions
-        mock_subscriptions = [
-            {
-                "id": "sub-1",
-                "user_id": user_id,
-                "publication_id": "pub-1",
-                "publication_name": "The Pragmatic Engineer",
-                "subdomain": "newsletter.pragmaticengineer.com",
-                "priority": None,
-                "enabled": True,
-                "created_at": "2024-01-01T00:00:00Z",
-                "updated_at": "2024-01-01T00:00:00Z",
-            },
-            {
-                "id": "sub-2",
-                "user_id": user_id,
-                "publication_id": "pub-2",
-                "publication_name": "Stratechery",
-                "subdomain": "stratechery.com",
-                "priority": None,
-                "enabled": True,
-                "created_at": "2024-01-01T00:00:00Z",
-                "updated_at": "2024-01-01T00:00:00Z",
-            },
-            {
-                "id": "sub-3",
-                "user_id": user_id,
-                "publication_id": "pub-3",
-                "publication_name": "Platformer",
-                "subdomain": "platformer.news",
-                "priority": None,
-                "enabled": True,
-                "created_at": "2024-01-01T00:00:00Z",
-                "updated_at": "2024-01-01T00:00:00Z",
-            },
-            {
-                "id": "sub-4",
-                "user_id": user_id,
-                "publication_id": "pub-4",
-                "publication_name": "Lenny's Newsletter",
-                "subdomain": "lennysnewsletter.com",
-                "priority": None,
-                "enabled": True,
-                "created_at": "2024-01-01T00:00:00Z",
-                "updated_at": "2024-01-01T00:00:00Z",
-            },
-            {
-                "id": "sub-5",
-                "user_id": user_id,
-                "publication_id": "pub-5",
-                "publication_name": "Not Boring",
-                "subdomain": "notboring.co",
-                "priority": None,
-                "enabled": True,
-                "created_at": "2024-01-01T00:00:00Z",
-                "updated_at": "2024-01-01T00:00:00Z",
-            },
-            {
-                "id": "sub-6",
-                "user_id": user_id,
-                "publication_id": "pub-6",
-                "publication_name": "The Browser",
-                "subdomain": "thebrowser.com",
-                "priority": None,
-                "enabled": True,
-                "created_at": "2024-01-01T00:00:00Z",
-                "updated_at": "2024-01-01T00:00:00Z",
-            },
-        ]
-
-        # Add them to the demo store
-        demo_store._substack_sources.extend(mock_subscriptions)
-
-    return RedirectResponse(
-        url=f"{settings.frontend_url}/sources/substack?connected=true"
-    )
 
 
 @router.get("/notebooklm/status")

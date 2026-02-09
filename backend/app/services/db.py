@@ -13,27 +13,6 @@ def get_db_client() -> Client:
     return get_supabase_client(settings)
 
 
-# Substack Sources
-def get_substack_sources(user_id: str) -> List[Dict]:
-    """Get all Substack sources for a user."""
-    client = get_db_client()
-    response = client.table("substack_sources").select("*").eq("user_id", user_id).execute()
-    return response.data
-
-
-def update_substack_priorities(user_id: str, priorities: Dict[str, int]) -> bool:
-    """Update priority rankings for Substack sources."""
-    client = get_db_client()
-
-    for publication_id, priority in priorities.items():
-        client.table("substack_sources").update({
-            "priority": priority,
-            "updated_at": datetime.utcnow().isoformat(),
-        }).eq("user_id", user_id).eq("publication_id", publication_id).execute()
-
-    return True
-
-
 # RSS Sources
 def get_rss_sources(user_id: str) -> List[Dict]:
     """Get all RSS sources for a user."""
