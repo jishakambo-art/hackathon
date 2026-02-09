@@ -1,8 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getGeneration } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 
 interface Generation {
   id: string;
@@ -41,6 +44,16 @@ export default function GenerationDetailPage({
 }: {
   params: { id: string };
 }) {
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user && !loading) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
+
   const { data: generation, isLoading } = useQuery<Generation>({
     queryKey: ["generation", params.id],
     queryFn: () => getGeneration(params.id),

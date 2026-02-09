@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { apiRequest } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 
 interface NotebookLMStatus {
   authenticated: boolean;
@@ -26,8 +28,17 @@ async function revokeNotebookLM(): Promise<any> {
 }
 
 export default function NotebookLMPage() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
   const queryClient = useQueryClient();
   const [isAuthenticating, setIsAuthenticating] = useState(false);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user && !loading) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
   const { data: status, isLoading } = useQuery({
     queryKey: ["notebooklm-status"],

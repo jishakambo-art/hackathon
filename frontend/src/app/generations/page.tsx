@@ -1,8 +1,11 @@
 "use client";
 
+import { useEffect } from "react";
 import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getGenerations } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 
 interface Generation {
   id: string;
@@ -29,6 +32,16 @@ const statusLabels: Record<string, string> = {
 };
 
 export default function GenerationsPage() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user && !loading) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
+
   const { data: generations, isLoading } = useQuery({
     queryKey: ["generations"],
     queryFn: getGenerations,

@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getTopics, addTopic, deleteTopic } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 
 interface Topic {
   id: string;
@@ -12,8 +14,17 @@ interface Topic {
 }
 
 export default function TopicsPage() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
   const queryClient = useQueryClient();
   const [newTopic, setNewTopic] = useState("");
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user && !loading) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
   const { data: topics, isLoading } = useQuery({
     queryKey: ["topics"],

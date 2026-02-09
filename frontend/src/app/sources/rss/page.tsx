@@ -1,9 +1,11 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getRssSources, addRssSource, deleteRssSource } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 
 interface RssSource {
   id: string;
@@ -13,9 +15,18 @@ interface RssSource {
 }
 
 export default function RssPage() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
   const queryClient = useQueryClient();
   const [url, setUrl] = useState("");
   const [name, setName] = useState("");
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user && !loading) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
   const { data: sources, isLoading } = useQuery({
     queryKey: ["rss-sources"],
