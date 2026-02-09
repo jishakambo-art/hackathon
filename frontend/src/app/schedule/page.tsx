@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { getSchedulePreferences, updateSchedulePreferences } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 
 // Common timezone options
 const TIMEZONES = [
@@ -24,11 +26,20 @@ const TIMEZONES = [
 ];
 
 export default function SchedulePage() {
+  const router = useRouter();
+  const { user, loading } = useAuth();
   const queryClient = useQueryClient();
   const [enabled, setEnabled] = useState(false);
   const [time, setTime] = useState("07:00");
   const [timezone, setTimezone] = useState("America/Los_Angeles");
   const [showSuccess, setShowSuccess] = useState(false);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user && !loading) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
   // Fetch current schedule
   const { data: schedule, isLoading } = useQuery({

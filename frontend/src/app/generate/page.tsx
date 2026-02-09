@@ -1,14 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useMutation } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { triggerGeneration } from "@/lib/api";
+import { useAuth } from "@/lib/auth-context";
 
 export default function GeneratePage() {
   const router = useRouter();
+  const { user, loading } = useAuth();
   const [generated, setGenerated] = useState(false);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user && !loading) {
+      router.push("/login");
+    }
+  }, [user, loading, router]);
 
   const mutation = useMutation({
     mutationFn: triggerGeneration,
